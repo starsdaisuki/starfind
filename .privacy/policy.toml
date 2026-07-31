@@ -1,0 +1,6 @@
+version = 1
+
+# Historical commit attribution for an automated public collaborator.
+approved_emails = ["noreply@anthropic.com"]
+approved_ips = []
+approved_uuids = []
