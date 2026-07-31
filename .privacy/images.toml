@@ -63,3 +63,9 @@ path = "Resources/AppIcon.iconset/icon_512x512@2x.png"
 sha256 = "abb17443255f0db360027fb8608b38d0b3a59d531bb7c916df4250bf0796bbdd"
 visual_reviewed = true
 metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.icns"
+sha256 = "5b747e741069ee4e8f3b36bb9b5701ad439b370902629b8b0cd2c3d2ea06fe29"
+visual_reviewed = true
+metadata_reviewed = true
