@@ -1,20 +1,25 @@
-# Spotlight 结果与 TCC 权限
+# Spotlight results and TCC permissions
 
-Spotlight 不会向应用返回所有已索引的路径。结果会按调用方的 TCC 权限过滤，
-这使「缺权限」很容易伪装成「Spotlight 搜索失效」。
+**English** · [简体中文](spotlight-permission-filtering.zh-CN.md)
 
-## 典型现象
+Spotlight does not return every indexed path to an app. Results are filtered by the
+caller's TCC permissions, which makes "missing permission" easy to mistake for "Spotlight
+search is broken".
 
-- 可以搜到系统应用和部分用户文件
-- 「桌面」、「文稿」或「下载」中的普通文件不出现
-- 同一条查询在终端进程中和通过 `open` 启动的 app 中结果不同
+## Typical symptoms
 
-从终端直接运行可能使用终端应用的权限上下文，而 `open StarFind.app` 使用 StarFind 自己的应用身份。
-所以「命令行正常、打包后异常」不能直接证明引擎有 bug。
+- System apps and some user files can be found
+- Ordinary files in Desktop, Documents or Downloads do not appear
+- The same query returns different results from a terminal process and from an app launched
+  through `open`
 
-## 最小复现
+Running directly from a terminal may use the terminal app's permission context, whereas
+`open StarFind.app` uses StarFind's own application identity. So "works on the command line,
+broken once bundled" is not by itself evidence of an engine bug.
 
-在受保护目录中生成临时测试项，例如：
+## Minimal reproduction
+
+Create temporary test items in a protected directory, for example:
 
 ```text
 ~/Documents/starfind-fixture/sample.txt
@@ -22,27 +27,28 @@ Spotlight 不会向应用返回所有已索引的路径。结果会按调用方�
 ~/Downloads/starfind-fixture/sample.dmg
 ```
 
-分别在已授权和未授权的应用身份下执行相同的 `NSMetadataQuery`。
-测试后删除 fixture，不要使用真实用户文件作为回归样例。
+Run the same `NSMetadataQuery` under an authorised and an unauthorised app identity. Delete
+the fixture afterwards, and never use real user files as regression samples.
 
-## StarFind 的处理
+## How StarFind handles it
 
-`FileAccess.swift` 将受保护目录的访问封装为 `ProtectedFolder`：
+`FileAccess.swift` wraps access to protected directories as `ProtectedFolder`:
 
-1. 启动时对桌面、文稿和下载执行小范围的访问探测。
-2. 在 TCC 尚未决定时由系统显示授权提示。
-3. 在设置中显示每个目录的当前状态。
-4. 结果明显缺失时，将权限作为可操作的排查方向。
+1. Probe access to Desktop, Documents and Downloads narrowly at launch.
+2. Let the system present the authorisation prompt while TCC is still undecided.
+3. Show the current status of each directory in Settings.
+4. Surface permissions as an actionable direction when results are obviously missing.
 
-## 签名的影响
+## Effect of code signing
 
-ad-hoc 签名的本地开发构建在重新打包后可能被系统视为不同代码实例，已有授权可能需要重新确认。
-正式发布应使用稳定的 bundle identifier、Developer ID 签名和公证。
+An ad-hoc signed local development build may be treated as a different code instance after
+repackaging, so an existing authorisation may need to be confirmed again. A proper release
+should use a stable bundle identifier, Developer ID signing and notarization.
 
-## 排查顺序
+## Troubleshooting order
 
-1. 用 `mdfind` 确认文件已被 Spotlight 索引。
-2. 使用实际 `.app` 身份复现，不只从终端运行可执行文件。
-3. 检查系统设置中的「文件与文件夹」授权。
-4. 在合成 fixture 上对比已授权和未授权的结果。
-5. 最后再排查索引范围、谓词和 UI 结果节流。
+1. Confirm with `mdfind` that the file is indexed by Spotlight.
+2. Reproduce using the actual `.app` identity, not just by running the executable from a terminal.
+3. Check the "Files and Folders" authorisation in System Settings.
+4. Compare authorised and unauthorised results against a synthetic fixture.
+5. Only then investigate index coverage, the predicate, and UI result throttling.

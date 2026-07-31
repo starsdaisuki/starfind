@@ -1,60 +1,67 @@
-# StarFind 跨 Space 窗口行为
+# StarFind cross-Space window behaviour
 
-StarFind 的搜索面板是一个 `NSPanel`。macOS 的 Space、全屏应用、Mission Control 和窗口集合行为
-会共同决定面板在哪个桌面出现，以及切换桌面后是否仍然可见。
+**English** · [简体中文](window-space-behavior.zh-CN.md)
 
-## 设计目标
+StarFind's search panel is an `NSPanel`. macOS Spaces, full-screen apps, Mission Control and
+window collection behaviour together decide which desktop the panel appears on, and whether
+it stays visible after switching desktops.
 
-- 快捷键应在当前 Space 上可用
-- 面板不应在切换 Space 时意外失去焦点或瞬移
-- 用户可选择 Spotlight 式的「只属于召唤桌面」行为
-- 也可选择让同一个面板跟随到所有 Space
+## Design goals
 
-## 状态模型
+- The hotkey should work on the current Space
+- The panel should not unexpectedly lose focus or teleport when Spaces change
+- The user can choose Spotlight-style "belongs to the summoning desktop" behaviour
+- Or let the same panel follow them across every Space
 
-StarFind 分开记录：
+## State model
 
-- 用户是否明确要求显示面板
-- 面板当前是否可见
-- 当前显示代次
-- Space 切换前后的窗口标识
+StarFind tracks these separately:
 
-不能仅依赖 `window.isVisible`。在 Space 过渡期间，AppKit 可能短暂报告旧窗口状态，
-延迟到达的关闭事件也不能关掉新 Space 上刚刚召唤的面板。
+- Whether the user has explicitly asked for the panel
+- Whether the panel is currently visible
+- The current display generation
+- The window identity before and after a Space switch
 
-## Spotlight 模式
+`window.isVisible` alone is not enough. During a Space transition, AppKit may briefly report
+the old window state, and a late-arriving close event must not dismiss a panel that was just
+summoned on the new Space.
 
-Spotlight 模式是默认选项：
+## Spotlight mode
 
-- 面板属于召唤它的 Space
-- 切换 Space 会结束旧面板会话
-- 在新 Space 上再次按快捷键会创建新的显示代次
+Spotlight mode is the default:
 
-此模式不使用 `.canJoinAllSpaces`，避免面板在多个桌面之间保持同一窗口实例。
+- The panel belongs to the Space that summoned it
+- Switching Spaces ends the old panel session
+- Pressing the hotkey again on a new Space creates a new display generation
 
-## 所有 Space 模式
+This mode does not use `.canJoinAllSpaces`, avoiding a single window instance persisting
+across several desktops.
 
-该模式使用 `.canJoinAllSpaces`：
+## All-Spaces mode
 
-- 同一个面板可以在所有 Space 显示
-- Space 切换本身不会结束查询会话
-- 关闭、打开结果或再次按快捷键才会结束面板会话
+This mode uses `.canJoinAllSpaces`:
 
-## 配置更新
+- The same panel can appear on every Space
+- A Space switch by itself does not end the query session
+- Closing, opening a result, or pressing the hotkey again ends the panel session
 
-切换模式时需要同时更新：
+## Applying a configuration change
+
+Switching modes requires updating all of:
 
 1. `NSPanel.collectionBehavior`
-2. 当前的显示意图
-3. Space 变更观察者对旧代次的处理
+2. The current display intent
+3. How the Space-change observer treats the old generation
 
-只改设置值而不重新应用 `collectionBehavior` 会导致界面显示已切换，窗口行为却仍是旧模式。
+Changing only the settings value without reapplying `collectionBehavior` leaves the
+interface showing the new mode while the window still behaves as the old one.
 
-## 回归验证
+## Regression verification
 
-`SelfTest.testPanelVisibilityIntent` 验证显示意图和代次规则。手工验证应覆盖：
+`SelfTest.testPanelVisibilityIntent` verifies the display intent and generation rules.
+Manual verification should cover:
 
-- 普通 Space 之间切换
-- 普通 Space 与全屏应用之间切换
-- 在切换动画中快速重复按快捷键
-- 打开文件、在访达中显示与 `Esc` 关闭时的焦点去向
+- Switching between ordinary Spaces
+- Switching between an ordinary Space and a full-screen app
+- Pressing the hotkey rapidly during the switch animation
+- Where focus lands when opening a file, revealing in Finder, and closing with `Esc`

@@ -1,60 +1,71 @@
-# 面板通知、节流与键盘事件
+# Panel notifications, throttling and keyboard events
 
-StarFind 的引擎测试不能覆盖所有 UI 故障。`NSMetadataQuery` 的批量通知、SwiftUI 状态更新、
-`NSPanel` 焦点和 macOS 主菜单会组合出只在真实面板中出现的问题。
+**English** · [简体中文](panel-layer-bugs.zh-CN.md)
 
-## `make panel` 诊断模式
+StarFind's engine tests cannot cover every UI failure. `NSMetadataQuery` batched
+notifications, SwiftUI state updates, `NSPanel` focus and the macOS main menu combine into
+problems that appear only in the real panel.
+
+## The `make panel` diagnostic mode
 
 ```bash
 make panel Q=report
 ```
 
-它会：
+It will:
 
-1. 通过 `open` 使用真实 app 身份启动 StarFind。
-2. 显示真实搜索面板。
-3. 将文字键事件逐个送入字段编辑器。
-4. 对比面板最终状态与独立引擎查询。
+1. Launch StarFind through `open`, using the real app identity.
+2. Show the real search panel.
+3. Feed text key events into the field editor one at a time.
+4. Compare the panel's final state against a standalone engine query.
 
-验证键盘事件时必须确保 StarFind 是激活应用且面板拥有 key window。
+When verifying keyboard events, StarFind must be the active application and the panel must
+own the key window.
 
-## 收工后的更新不能被节流丢掉
+## A post-completion update must not be dropped by throttling
 
-`NSMetadataQuery` 会批量发送以下通知：
+`NSMetadataQuery` sends these notifications in batches:
 
 - `NSMetadataQueryGatheringProgress`
 - `NSMetadataQueryDidFinishGathering`
 - `NSMetadataQueryDidUpdate`
 
-最终两个通知可能靠得非常近。如果节流逻辑对后一次更新直接 `return`，
-而之后没有更多通知，界面就会永久停留在中间批次。
+The last two can arrive extremely close together. If the throttling logic simply `return`s
+on the later update and no further notification follows, the interface stays permanently on
+an intermediate batch.
 
-StarFind 的 `emitDecision` 只有两种结果：
+StarFind's `emitDecision` has only two outcomes:
 
-- 立即 emit
-- 在剩余节流窗口后补做一次 emit
+- Emit immediately
+- Emit once more after the remaining throttle window
 
-延后任务会携带查询代次号，旧查询的任务不能覆盖新查询。查询收工后还会再复核一次结果数。
+The deferred task carries the query generation number, so a task from an old query cannot
+overwrite a newer one. After a query completes, the result count is also re-checked once.
 
-## 文本编辑快捷键需要主菜单
+## Text editing shortcuts need a main menu
 
-`NSApp.mainMenu == nil` 时，搜索框可以输入文字，但 `⌘A`、`⌘V`、`⌘X` 和 `⌘Z` 等标准操作
-可能不会通过响应链正常分发。只给状态栏图标配置 `NSMenu` 不足以解决这个问题。
+When `NSApp.mainMenu == nil`, the search field still accepts text, but standard actions such
+as `⌘A`, `⌘V`, `⌘X` and `⌘Z` may not dispatch correctly through the responder chain.
+Configuring an `NSMenu` for the status bar item alone does not solve this.
 
-StarFind 创建一个符合 AppKit 预期的主菜单，并将 action 的 target 留为 `nil`，让响应链选择字段编辑器。
-`⌘C` 需要特别处理：字段内有文本选区时保留系统复制，否则复制当前结果路径。
+StarFind creates a main menu matching AppKit's expectations and leaves the actions' target
+as `nil`, letting the responder chain pick the field editor. `⌘C` needs special handling:
+keep the system copy when there is a text selection in the field, otherwise copy the current
+result path.
 
-## 打开结果时不要抢回焦点
+## Do not steal focus back when opening a result
 
-通过 `Esc` 关闭面板时，恢复之前的应用是合理的。但打开文件或在访达中显示时，
-如果在目标窗口出现后又激活之前的应用，用户会被拉回原 Space。
+Restoring the previous application when the panel is closed with `Esc` is reasonable. But
+when opening a file or revealing it in Finder, activating the previous app after the target
+window has appeared drags the user back to the original Space.
 
-`PanelAction.restoresFocus` 将规则写成可测试的纯函数：
+`PanelAction.restoresFocus` expresses the rule as a testable pure function:
 
-- 关闭、复制路径：恢复原应用
-- 打开、在访达中显示：不恢复，激活最终接管的目标应用
+- Close, copy path: restore the original app
+- Open, reveal in Finder: do not restore; activate the target app that finally takes over
 
-## 回归验证
+## Regression verification
 
-`make test` 检查节流决策、主菜单键等价项和焦点恢复规则。
-`make panel` 则覆盖必须依赖真实窗口、字段编辑器和键盘事件的端到端路径。
+`make test` checks the throttling decision, the main menu key equivalents and the focus
+restoration rules. `make panel` covers the end-to-end path that necessarily depends on a
+real window, field editor and keyboard events.
