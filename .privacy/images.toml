@@ -1,0 +1,65 @@
+version = 1
+
+# StarFind application icon. The largest source image was inspected visually;
+# the remaining files are deterministic size variants. PNG metadata was also
+# reviewed by the publication gate. Any content change invalidates the hash.
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_128x128.png"
+sha256 = "563a3dfcd27de278f2fc8fc923de3b8e1f8b20c5e2df7e126ef34aa3eea99988"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_128x128@2x.png"
+sha256 = "40ba5b5e47091827c34ca59681e69524d7dc732acfe3f662d456641f25aed722"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_16x16.png"
+sha256 = "cacf11cf3dc467e3c72db39f43ac595019954964df09f94c0fb25698154ac3b6"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_16x16@2x.png"
+sha256 = "68bfcd5bfb0028752b622e1b758bb4b5286264263046af243632f096aa8f4664"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_256x256.png"
+sha256 = "40ba5b5e47091827c34ca59681e69524d7dc732acfe3f662d456641f25aed722"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_256x256@2x.png"
+sha256 = "a4723a1c330119f87b2a86e39b0dd27285d8b0a665bc26f284f1c6526fb14e26"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_32x32.png"
+sha256 = "68bfcd5bfb0028752b622e1b758bb4b5286264263046af243632f096aa8f4664"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_32x32@2x.png"
+sha256 = "87a572077480d90f12567c521a22007fdab2449e691b29848947bab421f1eb34"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_512x512.png"
+sha256 = "a4723a1c330119f87b2a86e39b0dd27285d8b0a665bc26f284f1c6526fb14e26"
+visual_reviewed = true
+metadata_reviewed = true
+
+[[images]]
+path = "Resources/AppIcon.iconset/icon_512x512@2x.png"
+sha256 = "abb17443255f0db360027fb8608b38d0b3a59d531bb7c916df4250bf0796bbdd"
+visual_reviewed = true
+metadata_reviewed = true

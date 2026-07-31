@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>StarFind</string>
+	<key>CFBundleExecutable</key>
+	<string>StarFind</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>io.github.starsdaisuki.starfind</string>
+	<key>CFBundleName</key>
+	<string>StarFind</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.4.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Stars</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>预览桌面上的文件时需要读取它。</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>预览「文稿」里的文件时需要读取它。</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>预览「下载」里的文件时需要读取它。</string>
+</dict>
+</plist>

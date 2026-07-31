@@ -1,0 +1,17 @@
+.build/
+build/
+.swiftpm/
+.DS_Store
+*.xcuserstate
+*.dSYM/
+*.app/
+*.dmg
+*.log
+.env
+.env.*
+
+# Local AI/work-session context is never part of the public source tree.
+CLAUDE.md
+AGENTS.md
+**/session-handoff*.md
+**/handoff*.md
