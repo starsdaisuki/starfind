@@ -1,6 +1,6 @@
 version = 1
 
-# Historical commit attribution for an automated public collaborator.
-approved_emails = ["noreply@anthropic.com"]
+# Commit attribution for automated public collaborators.
+approved_emails = ["noreply@anthropic.com", "noreply@openai.com"]
 approved_ips = []
 approved_uuids = []
