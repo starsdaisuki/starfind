@@ -7,6 +7,19 @@ StarFind 是一个轻量的 macOS 文件搜索面板。按下全局快捷键，�
 
 StarFind 直接查询 macOS Spotlight 索引，不建立自己的文件数据库，不联网，也不包含遥测。
 
+## 下载
+
+从 [GitHub Releases](https://github.com/starsdaisuki/starfind/releases/latest) 下载最新版 Apple 芯片构建。
+打开 DMG，把 StarFind 拖入「应用程序」；当前版本需要 macOS 14 或更高版本。
+
+应用目前使用 ad-hoc 签名，尚未经过 Apple 公证。如果 macOS 提示下载的应用“已损坏”，
+复制到「应用程序」后移除 quarantine 属性：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/StarFind.app
+open /Applications/StarFind.app
+```
+
 ## 功能
 
 - 全局快捷键唤起 Spotlight 式无边框面板

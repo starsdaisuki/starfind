@@ -8,6 +8,19 @@ filename or a filter, then open the result, reveal it in Finder, or copy its pat
 StarFind queries the macOS Spotlight index directly. It builds no file database of its own,
 makes no network requests, and contains no telemetry.
 
+## Download
+
+Download the latest Apple Silicon build from [GitHub Releases](https://github.com/starsdaisuki/starfind/releases/latest).
+Open the DMG and drag StarFind into Applications. The current build requires macOS 14 or later.
+
+The app is ad-hoc signed and not yet notarized. If macOS reports that the downloaded app is
+damaged, remove the quarantine attribute after copying it to Applications:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/StarFind.app
+open /Applications/StarFind.app
+```
+
 ## Features
 
 - A Spotlight-style borderless panel raised by a global hotkey
